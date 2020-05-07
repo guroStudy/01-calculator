@@ -14,6 +14,7 @@ const setButtonDefault = function(e) {
 buttons.forEach(el => {
     el.addEventListener('mousedown', setButtonActive);
     el.addEventListener('mouseup', setButtonDefault);
+    el.addEventListener('mouseout', setButtonDefault);
 })
 
 
@@ -35,7 +36,18 @@ const numberBtns = document.querySelectorAll('.number');
  * 결과 출력 영역, 계산결과
  */
 const output = document.querySelector('#output');
-const result = '0'
+let result = '0';
+
+/**
+ * 숫자버튼 이벤트 바인딩
+ */
+numberBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+        result += this.dataset.number;
+        display();
+    })
+})
+
 
 /**
  * 

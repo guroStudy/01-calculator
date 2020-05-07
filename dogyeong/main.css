@@ -22,7 +22,7 @@ table {
     background-color: #444;
     color: #fff;
     border-radius: 5px;
-    box-shadow: 0 0 12px #444;
+    box-shadow: 0 0 24px #444a;
     font-size: 1.25rem;
     font-weight: 400;
     overflow: hidden;
@@ -68,7 +68,7 @@ tr td:last-child {
     font-size: 1.5rem;
 }
 
-tr:last-child td:first-child { border-radius: 0 0 0 5px; }
+tr:last-child td:first-child { border-radius: 0 0 0 4px; }
 
-tr:last-child td:last-child { border-radius: 0 0 5px 0; }
+tr:last-child td:last-child { border-radius: 0 0 4px 0; }
 
