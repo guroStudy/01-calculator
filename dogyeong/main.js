@@ -17,6 +17,11 @@ buttons.forEach(el => {
     el.addEventListener('mouseout', setButtonDefault);
 })
 
+/**
+ * 상수, 기본값
+ */
+const DEFAULT_RESULT = '0';
+
 
 /**
  * 입력 버튼
@@ -32,22 +37,54 @@ const dotBtn = document.querySelector('.dot');
 const equalBtn = document.querySelector('.equal');
 const numberBtns = document.querySelectorAll('.number');
 
+
 /**
  * 결과 출력 영역, 계산결과
  */
 const output = document.querySelector('#output');
-let result = '0';
+let result = DEFAULT_RESULT;
+let operandL = '', operandR = '', operator = '';
+let shouldOverwrite = true;
+
+
+function clearExpression() {
+    operandL = '';
+    operandR = '';
+    operator = '';
+}
+
+function allClear() {
+    clearExpression();
+    display();
+}
+
+
 
 /**
  * 숫자버튼 이벤트 바인딩
  */
 numberBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
-        result += this.dataset.number;
-        display();
-    })
+    btn.addEventListener('click', appendNumber);
 })
 
+/**
+ * AC버튼 이벤트 바인딩
+ */
+clearBtn.addEventListener('click', allClear);
+
+/**
+ * 
+ */
+function appendNumber() {
+    if (shouldOverwrite) {
+        result = this.dataset.number;
+        shouldOverwrite = false;
+    }
+    else {
+        result += this.dataset.number;
+    }
+    display();
+}
 
 /**
  * 
