@@ -1,0 +1,22 @@
+*{
+    box-sizing: border-box;
+}
+
+.calc{
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+
+.calc td{
+    padding: 20px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.calc .num{
+    background-color: #ffcccc;
+}
+
+#text{
+    text-align: right;
+}
