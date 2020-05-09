@@ -143,6 +143,7 @@
         };
 
         this.initDatas = () => {
+          // define views data
           const views = Array.from(
             document.querySelectorAll(".calculator__view")
           );
@@ -151,65 +152,143 @@
             result: views[1],
           };
 
-          // this.btns = Array.from(this.btnsEl.children);
-          // this.numBtns = this.btns.filter((i) => parseInt(i.value) <= 10);
+          // define btn datas
+          this.btnsArray = Array.from(this.btnsEl.children);
 
+          this.numBtns = this.btnsArray.filter((item) => item.value <= 10);
+          this.operatorBtns = this.btnsArray.filter((item) =>
+            ["*", "/", "-", "+"].includes(item.value)
+          );
+          this.dotBtn = this.btnsArray.filter((item) => item.value === ".")[0];
+          this.acBtn = this.btnsArray.filter((item) => item.value === "C")[0];
+          this.delBtn = this.btnsArray.filter(
+            (item) => item.value === "delete"
+          )[0];
+          this.equalBtn = this.btnsArray.filter(
+            (item) => item.value === "="
+          )[0];
+
+          this.btns = {
+            numBtns: this.numBtns,
+            operatorBtns: this.operatorBtns,
+            dotBtn: this.dotBtn,
+            delBtn: this.delBtn,
+            acBtn: this.acBtn,
+            equalBtn: this.eqaulBtn,
+          };
+
+          //define value/operator storage
           this.values = [];
           this.operators = [];
+          this.equalCount = 0;
+        };
+
+        // utils
+
+        const updateEquationView = (value) => {
+          this.views.equation.value += value;
+        };
+        const updateCurrentValue = (value) => {
+          this.currentValue
+            ? (this.currentValue += value)
+            : (this.currentValue = value);
+        };
+        const getLastClickedBtnValue = () =>
+          this.views.equation.value.slice(-1);
+
+        const calculate = (operator, before, after) => {
+          switch (operator) {
+            case "+":
+              return before + after;
+            case "-":
+              return before - after;
+            case "*":
+              return before * after;
+            case "/":
+              return before / after;
+          }
         };
 
         this.init = () => {
           this.initRender();
           this.initDatas();
 
-          const updateEquationView = (e) => {
-            this.views.equation.value += e.target.innerHTML;
-          };
+          this.numBtns.forEach((item) => {
+            item.addEventListener("click", () => {
+              updateEquationView(item.value);
+              updateCurrentValue(item.value);
+              console.log(this.currentValue);
+            });
+          });
 
-          // update datas and views when click 'digits', '.', 'operators'
-          this.btnsEl.addEventListener("click", (e) => {
-            if (e.target !== e.currentTarget) {
-              //prevent click empty space in btnsEl
+          this.operatorBtns.forEach((item) => {
+            item.addEventListener("click", () => {
+              updateEquationView(item.value);
+              this.operators.push(item.value);
+              this.values.push(parseInt(this.currentValue));
+              this.currentValue = undefined;
+            });
+          });
 
-              // when click '.', 'digits'
-              if (e.target.value <= 10 || e.target.value === ".") {
-                updateEquationView(e);
-                this.currentValue
-                  ? (this.currentValue += e.target.value)
-                  : (this.currentValue = e.target.value);
-                console.log(this.currentValue);
+          this.dotBtn.addEventListener("click", (e) => {
+            updateEquationView(e.target.value);
+            updateCurrentValue(e.target.value);
+            console.log(this.currentValue);
+          });
+
+          this.delBtn.addEventListener("click", (e) => {
+            if (
+              getLastClickedBtnValue() <= 10 ||
+              getLastClickedBtnValue() === "."
+            ) {
+              this.currentValue = this.currentValue.slice(0, -1);
+              if (this.equalCount !== 0) {
+                this.values.pop();
               }
-
-              // when click 'operators'
-              if (this.operatorBtns.includes(e.target.value)) {
-                updateEquationView(e);
-                this.operators.push(e.target.value);
-                this.values.push(this.currentValue);
-                this.currentValue = undefined;
-              }
-
-              // when click 'delete'
-              if (e.target.value === "delete") {
-                if (
-                  this.views.equation.value.slice(-1) <= 10 ||
-                  this.views.equation.value.slice(-1) === "."
-                ) {
-                  this.currentValue = this.currentValue.slice(0, -1);
-                } else {
-                  this.currentValue = this.values.pop();
-                  this.operators.pop();
-                  console.log("last value is popped!");
-                  console.log("last operator is popped!");
-                  console.log("last operator is converted to currentValue!");
-                }
-                this.views.equation.value = this.views.equation.value.slice(
-                  0,
-                  -1
-                );
-                console.log(this.currentValue);
-                console.log([this.values, this.operators]);
-              }
+            } else {
+              this.currentValue = this.values.pop();
+              this.operators.pop();
+              console.log("last value is popped!");
+              console.log("last operator is popped!");
+              console.log("last operator is converted to currentValue!");
             }
+            this.views.equation.value = this.views.equation.value.slice(0, -1);
+            console.log(this.currentValue);
+            console.log([this.values, this.operators]);
+          });
+
+          this.acBtn.addEventListener("click", (e) => {
+            this.values = [];
+            this.operators = [];
+            this.currentValue = "";
+            this.views.equation.value = "";
+          });
+          console.log(this.equalBtn);
+
+          this.equalBtn.addEventListener("click", () => {
+            this.equalCount += 1;
+
+            if (this.lastEquation !== this.views.equation.value) {
+              this.values.push(parseInt(this.currentValue));
+            }
+            let tempValues = [...this.values];
+            this.operators.forEach((operator, i) => {
+              if (["*", "/"].includes(operator)) {
+                tempValues[i + 1] = calculate(
+                  operator,
+                  tempValues[i],
+                  tempValues[i + 1]
+                );
+                tempValues[i] = 0;
+                console.log(tempValues);
+              } else if (operator === "-") {
+                tempValues[i + 1] = -tempValues[i + 1];
+              }
+            });
+            this.views.result.value = tempValues
+              .filter(Boolean) // check truthy value
+              .reduce((accumulator, current) => (accumulator += current), 0);
+            this.lastEquation = this.views.equation.value;
           });
         };
       }
