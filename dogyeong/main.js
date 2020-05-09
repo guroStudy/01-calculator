@@ -63,6 +63,8 @@ function clearExpression() {
 
 function handleClear() {
     clearExpression();
+    operandStatus = 1;
+    shouldOverwrite = true;
     display();
 }
 
@@ -94,14 +96,43 @@ function handleNumber() {
     display();
 }
 
+
+/**
+ * operator
+ */
+function handleOperator(op) {
+    if (operandStatus === 1) {
+        operandStatus = 2;
+
+        if (shouldOverwrite)
+            operandL = '0';
+    }
+    else if (!shouldOverwrite) {
+        operandL = getCalculateResult();
+        operandR = '';
+    }
+
+    shouldOverwrite = true;
+    operator = op;
+
+    display();
+}
+
+/**
+ * 계산결과 구하기
+ */
+function getCalculateResult() {
+    return eval(`${operandL}${operator}${operandR}`).toString();
+}
+
+
 /**
  * percent
  */
 function handlePercent() {
-    if (shouldOverwrite)
+    if (operandStatus === 1 && shouldOverwrite) 
         return;
-    
-    if (operandStatus === 1)
+    else if (operandStatus === 1 || shouldOverwrite)
         operandL = eval(`${operandL}/100`).toString();
     else
         operandR = eval(`${operandR}/100`).toString();
@@ -114,10 +145,9 @@ function handlePercent() {
  * invert
  */
 function handleInvert() {
-    if (shouldOverwrite)
+    if (operandStatus === 1 && shouldOverwrite) 
         return;
-
-    if (operandStatus === 1)
+    else if (operandStatus === 1 || shouldOverwrite)
         operandL = operandL.startsWith('-') ? operandL.slice(1) : `-${operandL}`;
     else
         operandR = operandR.startsWith('-') ? operandL.slice(1) : `-${operandR}`;
@@ -132,9 +162,9 @@ function handleInvert() {
 function display() {
     let result;
 
-    if (shouldOverwrite)
+    if (operandStatus === 1 && shouldOverwrite) 
         result = DEFAULT_RESULT;
-    else if (operandStatus === 1)
+    else if (operandStatus === 1 || shouldOverwrite)
         result = operandL;
     else
         result = operandR;
@@ -167,6 +197,26 @@ invertBtn.addEventListener('click', handleInvert);
  *  % 버튼 이벤트 바인딩
  */
 percentBtn.addEventListener('click', handlePercent);
+
+
+/**
+ * +,-,x,÷ 버튼 이벤트 바인딩
+ */
+plusBtn.addEventListener('click', function() { 
+    handleOperator('+') 
+});
+
+minusBtn.addEventListener('click', function() { 
+    handleOperator('-') 
+});
+
+multBtn.addEventListener('click', function() { 
+    handleOperator('*') 
+});
+
+divisionBtn.addEventListener('click', function() { 
+    handleOperator('/') 
+});
 
 
 display();
