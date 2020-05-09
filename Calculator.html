@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        border: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      #app {
+        padding: 2rem;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px #eee, 0px 0px 15px #ccc, 0px 0px 20px #bbb;
+      }
+      .calculator {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        height: 400px;
+      }
+
+      .calculator__view__wrapper {
+        display: flex;
+        flex-direction: column;
+        padding: 1em 0;
+      }
+      .calculator__view {
+        height: 2.5rem;
+        background-color: rgba(1, 83, 83, 0.712);
+        color: #fff;
+      }
+
+      .calculator__view:last-child {
+        margin-bottom: 10px;
+      }
+
+      .calculator__btns {
+        flex: 1;
+        display: grid;
+        grid-gap: 10px;
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .calculator__btns__btn {
+        border: 0;
+        font-size: 1.5rem;
+        background-color: #fff;
+        box-shadow: inset 0px 0px 50px #eeeeee,
+          inset 0px 0px 30px rgba(215, 233, 235, 0.623);
+        border-radius: 5px;
+      }
+      .calculator__btns [value="C"] {
+        grid-area: 1/1/2/3; /*rowStart/columnStart/rowEnd/columnEnd*/
+        box-shadow: inset 0px 0px 100px rgb(222, 223, 214);
+      }
+      .calculator__btns [value="="] {
+        grid-area: 5/3/6/5;
+      }
+      .calculator__btns__btn:hover {
+        cursor: pointer;
+        box-shadow: none;
+        background-color: rgb(223, 241, 241);
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      //index.js
+      const app = document.getElementById("app");
+      const calculator = new Calculator(app);
+      calculator.init();
+
+      //calculator.js
+      function Calculator(target) {
+        this.target = target;
+        this.result = 0;
+        this.equation = "";
+        this.manipulateBtns = ["C", "=", "delete"];
+        this.operatorBtns = ["*", "/", "-", "+"];
+
+        this.makeCalculatorFrame = (target) => {
+          const calculator = document.createElement("div");
+          calculator.className = "calculator";
+          target.appendChild(calculator);
+          return calculator;
+        };
+
+        this.makeViews = (target) => {
+          const views = document.createElement("div");
+          views.className = "calculator__view__wrapper";
+          views.innerHTML = `
+                  <input type="text" class="calculator__view calculator__view__equation" disabled>
+                  <input type="text" class="calculator__view calculator__view__result" disabled>
+                `;
+          target.appendChild(views);
+          return views;
+        };
+
+        this.makeBtns = (target) => {
+          const btns = document.createElement("div");
+          btns.className = "calculator__btns";
+          btns.innerHTML = `
+                  <button class="calculator__btns__btn type="button" value = 'C' class="allClear">AC</button>
+                  <button class="calculator__btns__btn type="button" value = 'delete'>del</button>
+                  <button class="calculator__btns__btn type="button" value = '/'>&divide</button>
+                  <button class="calculator__btns__btn type="button" value = 7>7</button>
+                  <button class="calculator__btns__btn type="button" value = 8>8</button>
+                  <button class="calculator__btns__btn type="button" value = 9>9</button>
+                  <button class="calculator__btns__btn type="button" value = '*'>&times</button>
+                  <button class="calculator__btns__btn type="button" value = 4>4</button>
+                  <button class="calculator__btns__btn type="button" value = 5>5</button>
+                  <button class="calculator__btns__btn type="button" value = 6>6</button>
+                  <button class="calculator__btns__btn type="button" value = '-'>-</button>
+                  <button class="calculator__btns__btn type="button" value = 1>1</button>
+                  <button class="calculator__btns__btn type="button" value = 2>2</button>
+                  <button class="calculator__btns__btn type="button" value = 3>3</button>
+                  <button class="calculator__btns__btn type="button" value = '+'>+</button>
+                  <button class="calculator__btns__btn type="button" value = '.'>.</button>
+                  <button class="calculator__btns__btn type="button" value = 0>0</button>
+                  <button class="calculator__btns__btn type="button" value = '='>=</button>
+                  `;
+          target.appendChild(btns);
+          return btns;
+        };
+
+        this.initRender = () => {
+          this.calculatorEl = this.makeCalculatorFrame(this.target);
+          this.viewsEl = this.makeViews(this.calculatorEl);
+          this.btnsEl = this.makeBtns(this.calculatorEl);
+        };
+
+        this.initDatas = () => {
+          const views = Array.from(
+            document.querySelectorAll(".calculator__view")
+          );
+          this.views = {
+            equation: views[0],
+            result: views[1],
+          };
+
+          // this.btns = Array.from(this.btnsEl.children);
+          // this.numBtns = this.btns.filter((i) => parseInt(i.value) <= 10);
+
+          this.values = [];
+          this.operators = [];
+        };
+
+        this.init = () => {
+          this.initRender();
+          this.initDatas();
+
+          const updateEquationView = (e) => {
+            this.views.equation.value += e.target.innerHTML;
+          };
+
+          // update datas and views when click 'digits', '.', 'operators'
+          this.btnsEl.addEventListener("click", (e) => {
+            if (e.target !== e.currentTarget) {
+              //prevent click empty space in btnsEl
+
+              // when click '.', 'digits'
+              if (e.target.value <= 10 || e.target.value === ".") {
+                updateEquationView(e);
+                this.currentValue
+                  ? (this.currentValue += e.target.value)
+                  : (this.currentValue = e.target.value);
+                console.log(this.currentValue);
+              }
+
+              // when click 'operators'
+              if (this.operatorBtns.includes(e.target.value)) {
+                updateEquationView(e);
+                this.operators.push(e.target.value);
+                this.values.push(this.currentValue);
+                this.currentValue = undefined;
+              }
+
+              // when click 'delete'
+              if (e.target.value === "delete") {
+                if (
+                  this.views.equation.value.slice(-1) <= 10 ||
+                  this.views.equation.value.slice(-1) === "."
+                ) {
+                  this.currentValue = this.currentValue.slice(0, -1);
+                } else {
+                  this.currentValue = this.values.pop();
+                  this.operators.pop();
+                  console.log("last value is popped!");
+                  console.log("last operator is popped!");
+                  console.log("last operator is converted to currentValue!");
+                }
+                this.views.equation.value = this.views.equation.value.slice(
+                  0,
+                  -1
+                );
+                console.log(this.currentValue);
+                console.log([this.values, this.operators]);
+              }
+            }
+          });
+        };
+      }
+      // render(equation, result);
+      // calculate();
+      // add;
+      // sub;
+      // divide;
+      // multiply;
+      // writeEquation();
+      // btns > string;
+      // update();
+      // reset();
+    </script>
+  </body>
+</html>
