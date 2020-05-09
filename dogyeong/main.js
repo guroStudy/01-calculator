@@ -39,24 +39,110 @@ const numberBtns = document.querySelectorAll('.number');
 
 
 /**
- * 결과 출력 영역, 계산결과
+ * 결과 출력 영역
  */
 const output = document.querySelector('#output');
-let result = DEFAULT_RESULT;
+
+
+/**
+ * 상태변수
+ */
 let operandL = '', operandR = '', operator = '';
+let operandStatus = 1;
 let shouldOverwrite = true;
 
 
+/**
+ * clear
+ */
 function clearExpression() {
     operandL = '';
     operandR = '';
     operator = '';
 }
 
-function allClear() {
+function handleClear() {
     clearExpression();
     display();
 }
+
+/**
+ * number input
+ */
+function replaceNumber(num) {
+    if (operandStatus === 1)
+        operandL = num;
+    else
+        operandR = num; 
+
+    shouldOverwrite = false;
+}
+
+function appendNumber(num) {
+    if (operandStatus === 1)
+        operandL += num;
+    else
+        operandR += num; 
+}
+
+function handleNumber() {
+    if (shouldOverwrite) 
+        replaceNumber(this.dataset.number);
+    else
+        appendNumber(this.dataset.number);
+
+    display();
+}
+
+/**
+ * percent
+ */
+function handlePercent() {
+    if (shouldOverwrite)
+        return;
+    
+    if (operandStatus === 1)
+        operandL = eval(`${operandL}/100`).toString();
+    else
+        operandR = eval(`${operandR}/100`).toString();
+
+    display();
+}
+
+
+/**
+ * invert
+ */
+function handleInvert() {
+    if (shouldOverwrite)
+        return;
+
+    if (operandStatus === 1)
+        operandL = operandL.startsWith('-') ? operandL.slice(1) : `-${operandL}`;
+    else
+        operandR = operandR.startsWith('-') ? operandL.slice(1) : `-${operandR}`;
+    
+    display();
+}
+
+
+/**
+ * display
+ */
+function display() {
+    let result;
+
+    if (shouldOverwrite)
+        result = DEFAULT_RESULT;
+    else if (operandStatus === 1)
+        result = operandL;
+    else
+        result = operandR;
+    
+    output.innerText = result;
+}
+
+
 
 
 
@@ -64,34 +150,24 @@ function allClear() {
  * 숫자버튼 이벤트 바인딩
  */
 numberBtns.forEach(btn => {
-    btn.addEventListener('click', appendNumber);
+    btn.addEventListener('click', handleNumber);
 })
 
 /**
  * AC버튼 이벤트 바인딩
  */
-clearBtn.addEventListener('click', allClear);
+clearBtn.addEventListener('click', handleClear);
 
 /**
- * 
+ * invert버튼 이벤트 바인딩
  */
-function appendNumber() {
-    if (shouldOverwrite) {
-        result = this.dataset.number;
-        shouldOverwrite = false;
-    }
-    else {
-        result += this.dataset.number;
-    }
-    display();
-}
+invertBtn.addEventListener('click', handleInvert);
 
 /**
- * 
+ *  % 버튼 이벤트 바인딩
  */
-function display() {
-    output.innerText = result;
-}
+percentBtn.addEventListener('click', handlePercent);
+
 
 display();
 

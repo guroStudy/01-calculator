@@ -23,8 +23,8 @@ table {
     color: #fff;
     border-radius: 5px;
     box-shadow: 0 0 24px #444a;
-    font-size: 1.25rem;
-    font-weight: 400;
+    font-size: 1.4rem;
+    font-weight: 300;
     overflow: hidden;
     table-layout: fixed;
 }
@@ -43,10 +43,7 @@ tr:first-child {
     background-color: transparent;
     display: table-cell;
     cursor: initial;
-    direction: rtl;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-size: 1.75rem;
+    font-size: 1.9rem;
 }
 
 tr:nth-child(2) > td { background-color: #555; }
@@ -65,7 +62,7 @@ td.active {
 
 tr td:last-child {
     background-color: orange;
-    font-size: 1.5rem;
+    font-size: 1.75rem;
 }
 
 tr:last-child td:first-child { border-radius: 0 0 0 4px; }
