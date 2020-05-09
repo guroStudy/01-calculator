@@ -1,21 +1,3 @@
-/**
- * 버튼에 클릭 이벤트 걸기
- */
-const buttons = document.querySelectorAll('.button');
-
-const setButtonActive = function(e) {
-    e.target.classList.add('active');
-}
-
-const setButtonDefault = function(e) {
-    e.target.classList.remove('active');
-}
-
-buttons.forEach(el => {
-    el.addEventListener('mousedown', setButtonActive);
-    el.addEventListener('mouseup', setButtonDefault);
-    el.addEventListener('mouseout', setButtonDefault);
-})
 
 /**
  * 상수, 기본값
@@ -50,6 +32,14 @@ const output = document.querySelector('#output');
 let operandL = '', operandR = '', operator = '';
 let operandStatus = 1;
 let shouldOverwrite = true;
+
+
+/**
+ * 계산결과 구하기
+ */
+function getCalculatedResult(left, right) {
+    return eval(`${left}${operator}${right}`).toString();
+}
 
 
 /**
@@ -108,7 +98,7 @@ function handleOperator(op) {
             operandL = '0';
     }
     else if (!shouldOverwrite) {
-        operandL = getCalculateResult();
+        operandL = getCalculatedResult(operandL, operandR);
         operandR = '';
     }
 
@@ -118,12 +108,7 @@ function handleOperator(op) {
     display();
 }
 
-/**
- * 계산결과 구하기
- */
-function getCalculateResult() {
-    return eval(`${operandL}${operator}${operandR}`).toString();
-}
+
 
 
 /**
@@ -152,6 +137,20 @@ function handleInvert() {
     else
         operandR = operandR.startsWith('-') ? operandL.slice(1) : `-${operandR}`;
     
+    display();
+}
+
+function handleEqual() {
+    if (operator === '') 
+        return;
+    else if (shouldOverwrite)
+        operandL = getCalculatedResult(operandL, operandL);
+    else {
+        operandL = getCalculatedResult(operandL, operandR);
+        operandR = '';
+        shouldOverwrite = true;
+    }
+        
     display();
 }
 
@@ -217,6 +216,11 @@ multBtn.addEventListener('click', function() {
 divisionBtn.addEventListener('click', function() { 
     handleOperator('/') 
 });
+
+/**
+ * (=)버튼 이벤트 바인딩
+ */
+equalBtn.addEventListener('click', handleEqual);
 
 
 display();
