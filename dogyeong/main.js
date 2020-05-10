@@ -147,6 +147,10 @@ function handleInvert() {
     display();
 }
 
+
+/**
+ * equal
+ */
 function handleEqual() {
     if (operator === '') 
         return;
@@ -159,6 +163,32 @@ function handleEqual() {
     }
         
     display();
+}
+
+
+/**
+ * dot
+ */
+function handleDot() {
+    if (operandStatus === OPRND_STATUS_L && shouldOverwrite) 
+        return;
+    else if (operandStatus === OPRND_STATUS_L || shouldOverwrite)
+        operandL = getDot(operandL);
+    else
+        opernadR = getDot(operandR);
+      
+    display();
+}
+
+function getDot(operand) {
+    if (!hasDot(operand))
+        return operand + '.';
+    
+    return operand;        
+}
+
+function hasDot(num) {
+    return num.includes('.');
 }
 
 
@@ -230,6 +260,11 @@ divisionBtn.addEventListener('click', function() {
  * (=)버튼 이벤트 바인딩
  */
 equalBtn.addEventListener('click', handleEqual);
+
+/**
+ * (.)버튼 이벤트 바인딩
+ */
+dotBtn.addEventListener('click', handleDot);
 
 
 display();
