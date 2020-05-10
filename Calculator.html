@@ -88,8 +88,6 @@
         this.target = target;
         this.result = 0;
         this.equation = "";
-        this.manipulateBtns = ["C", "=", "delete"];
-        this.operatorBtns = ["*", "/", "-", "+"];
 
         this.makeCalculatorFrame = (target) => {
           const calculator = document.createElement("div");
@@ -136,7 +134,7 @@
           return btns;
         };
 
-        this.initRender = () => {
+        this.makeCalculator = () => {
           this.calculatorEl = this.makeCalculatorFrame(this.target);
           this.viewsEl = this.makeViews(this.calculatorEl);
           this.btnsEl = this.makeBtns(this.calculatorEl);
@@ -183,19 +181,7 @@
           this.equalCount = 0;
         };
 
-        // utils
-
-        const updateEquationView = (value) => {
-          this.views.equation.value += value;
-        };
-        const updateCurrentValue = (value) => {
-          this.currentValue
-            ? (this.currentValue += value)
-            : (this.currentValue = value);
-        };
-        const getLastClickedBtnValue = () =>
-          this.views.equation.value.slice(-1);
-
+        // calculate
         const calculate = (operator, before, after) => {
           switch (operator) {
             case "+":
@@ -209,70 +195,95 @@
           }
         };
 
+        // handle datas
+        const setCurrentValue = (value) => {
+          this.currentValue = value;
+        };
+
+        const updateCurrentValue = (value) => {
+          this.currentValue
+            ? (this.currentValue += value)
+            : setCurrentValue(value);
+        };
+
+        const pushToValues = (value) => {
+          this.values.push(value);
+        };
+
+        const pushToOperators = (value) => {
+          this.operators.push(value);
+        };
+
+        const reset = () => {
+          this.values = [];
+          this.operators = [];
+          this.currentValue = "";
+          this.views.equation.value = "";
+        };
+
+        const getLastCharOfEquation = () => this.views.equation.value.slice(-1);
+
+        // set views
+        const updateEquationValue = (value) => {
+          this.views.equation.value += value;
+        };
+        const setEquationValue = (value) => {
+          this.views.equation.value = value;
+        };
+        const setResultValue = (value) => {
+          this.views.result.value = value;
+        };
+
         this.init = () => {
-          this.initRender();
+          this.makeCalculator();
           this.initDatas();
 
           this.numBtns.forEach((item) => {
             item.addEventListener("click", () => {
-              updateEquationView(item.value);
+              console.log(this);
+              updateEquationValue(item.value);
               updateCurrentValue(item.value);
-              console.log(this.currentValue);
             });
           });
 
           this.operatorBtns.forEach((item) => {
             item.addEventListener("click", () => {
-              updateEquationView(item.value);
-              this.operators.push(item.value);
-              this.values.push(parseInt(this.currentValue));
-              this.currentValue = undefined;
+              updateEquationValue(item.value);
+              pushToOperators(item.value);
+              pushToValues(this.currentValue);
+              setCurrentValue(undefined);
             });
           });
 
           this.dotBtn.addEventListener("click", (e) => {
-            updateEquationView(e.target.value);
+            updateEquationValue(e.target.value);
             updateCurrentValue(e.target.value);
-            console.log(this.currentValue);
           });
 
           this.delBtn.addEventListener("click", (e) => {
             if (
-              getLastClickedBtnValue() <= 10 ||
-              getLastClickedBtnValue() === "."
+              getLastCharOfEquation() <= 10 ||
+              getLastCharOfEquation() === "."
             ) {
-              this.currentValue = this.currentValue.slice(0, -1);
-              if (this.equalCount !== 0) {
-                this.values.pop();
-              }
+              setCurrentValue(this.currentValue.slice(0, -1));
+              this.currentValue === "" && setCurrentValue(this.values.pop());
             } else {
-              this.currentValue = this.values.pop();
               this.operators.pop();
-              console.log("last value is popped!");
-              console.log("last operator is popped!");
-              console.log("last operator is converted to currentValue!");
             }
-            this.views.equation.value = this.views.equation.value.slice(0, -1);
-            console.log(this.currentValue);
-            console.log([this.values, this.operators]);
+            setEquationValue(this.views.equation.value.slice(0, -1));
           });
 
           this.acBtn.addEventListener("click", (e) => {
-            this.values = [];
-            this.operators = [];
-            this.currentValue = "";
-            this.views.equation.value = "";
+            reset();
           });
-          console.log(this.equalBtn);
 
           this.equalBtn.addEventListener("click", () => {
-            this.equalCount += 1;
+            let tempValues = [...this.values, this.currentValue].map((i) =>
+              parseFloat(i)
+            );
 
-            if (this.lastEquation !== this.views.equation.value) {
-              this.values.push(parseInt(this.currentValue));
-            }
-            let tempValues = [...this.values];
             this.operators.forEach((operator, i) => {
+              // first, calculate * and /
               if (["*", "/"].includes(operator)) {
                 tempValues[i + 1] = calculate(
                   operator,
@@ -281,6 +292,7 @@
                 );
                 tempValues[i] = 0;
                 console.log(tempValues);
+                // if '-'' operator, convert to negative number
               } else if (operator === "-") {
                 tempValues[i + 1] = -tempValues[i + 1];
               }
@@ -288,7 +300,6 @@
             this.views.result.value = tempValues
               .filter(Boolean) // check truthy value
               .reduce((accumulator, current) => (accumulator += current), 0);
-            this.lastEquation = this.views.equation.value;
           });
         };
       }
