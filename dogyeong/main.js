@@ -1,8 +1,13 @@
+/**************************************
+ * constants, variables, elements
+ **************************************/
 
 /**
  * 상수, 기본값
  */
 const DEFAULT_RESULT = '0';
+const OPRND_STATUS_L = 1;
+const OPRND_STATUS_R = 2;
 
 
 /**
@@ -30,9 +35,13 @@ const output = document.querySelector('#output');
  * 상태변수
  */
 let operandL = '', operandR = '', operator = '';
-let operandStatus = 1;
+let operandStatus = OPRND_STATUS_L;
 let shouldOverwrite = true;
 
+
+/**************************************
+ * functions
+ **************************************/
 
 /**
  * 계산결과 구하기
@@ -53,7 +62,7 @@ function clearExpression() {
 
 function handleClear() {
     clearExpression();
-    operandStatus = 1;
+    operandStatus = OPRND_STATUS_L;
     shouldOverwrite = true;
     display();
 }
@@ -62,7 +71,7 @@ function handleClear() {
  * number input
  */
 function replaceNumber(num) {
-    if (operandStatus === 1)
+    if (operandStatus === OPRND_STATUS_L)
         operandL = num;
     else
         operandR = num; 
@@ -71,7 +80,7 @@ function replaceNumber(num) {
 }
 
 function appendNumber(num) {
-    if (operandStatus === 1)
+    if (operandStatus === OPRND_STATUS_L)
         operandL += num;
     else
         operandR += num; 
@@ -91,8 +100,8 @@ function handleNumber() {
  * operator
  */
 function handleOperator(op) {
-    if (operandStatus === 1) {
-        operandStatus = 2;
+    if (operandStatus === OPRND_STATUS_L) {
+        operandStatus = OPRND_STATUS_R;
 
         if (shouldOverwrite)
             operandL = '0';
@@ -109,15 +118,13 @@ function handleOperator(op) {
 }
 
 
-
-
 /**
  * percent
  */
 function handlePercent() {
-    if (operandStatus === 1 && shouldOverwrite) 
+    if (operandStatus === OPRND_STATUS_L && shouldOverwrite) 
         return;
-    else if (operandStatus === 1 || shouldOverwrite)
+    else if (operandStatus === OPRND_STATUS_L || shouldOverwrite)
         operandL = eval(`${operandL}/100`).toString();
     else
         operandR = eval(`${operandR}/100`).toString();
@@ -130,9 +137,9 @@ function handlePercent() {
  * invert
  */
 function handleInvert() {
-    if (operandStatus === 1 && shouldOverwrite) 
+    if (operandStatus === OPRND_STATUS_L && shouldOverwrite) 
         return;
-    else if (operandStatus === 1 || shouldOverwrite)
+    else if (operandStatus === OPRND_STATUS_L || shouldOverwrite)
         operandL = operandL.startsWith('-') ? operandL.slice(1) : `-${operandL}`;
     else
         operandR = operandR.startsWith('-') ? operandL.slice(1) : `-${operandR}`;
@@ -140,6 +147,10 @@ function handleInvert() {
     display();
 }
 
+
+/**
+ * equal
+ */
 function handleEqual() {
     if (operator === '') 
         return;
@@ -156,14 +167,40 @@ function handleEqual() {
 
 
 /**
+ * dot
+ */
+function handleDot() {
+    if (operandStatus === OPRND_STATUS_L && shouldOverwrite) 
+        return;
+    else if (operandStatus === OPRND_STATUS_L || shouldOverwrite)
+        operandL = getDot(operandL);
+    else
+        opernadR = getDot(operandR);
+      
+    display();
+}
+
+function getDot(operand) {
+    if (!hasDot(operand))
+        return operand + '.';
+    
+    return operand;        
+}
+
+function hasDot(num) {
+    return num.includes('.');
+}
+
+
+/**
  * display
  */
 function display() {
     let result;
 
-    if (operandStatus === 1 && shouldOverwrite) 
+    if (operandStatus === OPRND_STATUS_L && shouldOverwrite) 
         result = DEFAULT_RESULT;
-    else if (operandStatus === 1 || shouldOverwrite)
+    else if (operandStatus === OPRND_STATUS_L || shouldOverwrite)
         result = operandL;
     else
         result = operandR;
@@ -173,7 +210,9 @@ function display() {
 
 
 
-
+/**************************************
+ * event binding
+ **************************************/
 
 /**
  * 숫자버튼 이벤트 바인딩
@@ -221,6 +260,11 @@ divisionBtn.addEventListener('click', function() {
  * (=)버튼 이벤트 바인딩
  */
 equalBtn.addEventListener('click', handleEqual);
+
+/**
+ * (.)버튼 이벤트 바인딩
+ */
+dotBtn.addEventListener('click', handleDot);
 
 
 display();
