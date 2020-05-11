@@ -88,8 +88,6 @@
       //calculator.js
       function Calculator(target) {
         this.target = target;
-        this.result = 0;
-        this.equation = "";
 
         const makeCalculatorFrame = (target) => {
           const calculator = document.createElement("div");
@@ -200,18 +198,17 @@
           console.log(this.values);
           console.log(this.operators);
           console.log(this.currentValue);
+          console.log(this.views.equation.value);
         };
 
         const setCurrentValue = (value) => {
           this.currentValue = value;
-          logData();
         };
 
         const appendToCurrentValue = (value) => {
           this.currentValue
             ? (this.currentValue += value)
             : setCurrentValue(value);
-          logData();
         };
 
         const pushToValues = (value) => {
@@ -224,7 +221,6 @@
 
         const pushToOperators = (value) => {
           this.operators.push(value);
-          logData();
         };
 
         this.getLastCharOfEquation = () => this.views.equation.value.slice(-1);
@@ -245,6 +241,7 @@
         };
         const setResultValue = (value) => {
           this.views.result.value = value;
+          logData();
         };
 
         const reset = () => {
@@ -258,7 +255,6 @@
         this.init = () => {
           makeCalculator();
           initDatas();
-          console.log(this.views);
 
           this.numBtns.forEach((numBtn) => {
             numBtn.addEventListener("click", () => {
@@ -301,7 +297,6 @@
               this.operators.pop();
             }
             setEquationValue(this.views.equation.value.slice(0, -1));
-            logData();
           });
 
           this.acBtn.addEventListener("click", (e) => {
@@ -317,10 +312,7 @@
 
             while (tempValues.length <= tempOperators.length) {
               tempOperators.pop();
-              logData();
-              console.log(tempValues);
             }
-            console.log(tempOperators);
 
             tempOperators.forEach((operator, i) => {
               // first, calculate * and /
@@ -331,18 +323,17 @@
                   tempValues[i + 1]
                 );
                 tempValues[i] = 0;
-                console.log(tempValues);
                 // if '-'' operator, convert to negative number
               } else if (operator === "-") {
                 tempValues[i + 1] = -tempValues[i + 1];
               }
             });
-            console.log(tempOperators);
-            console.log(tempValues);
-            console.log(this.currentValue);
-            this.views.result.value = tempValues
-              .filter(Boolean) // check truthy value
-              .reduce((accumulator, current) => (accumulator += current), 0);
+
+            setResultValue(
+              tempValues
+                .filter(Boolean) // check truthy value
+                .reduce((accumulator, current) => (accumulator += current), 0)
+            );
           });
         };
       }
