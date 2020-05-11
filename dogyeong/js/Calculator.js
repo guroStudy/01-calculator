@@ -269,5 +269,13 @@ dotBtn.addEventListener('click', handleDot);
 
 display();
 
+export default class Calculator {
+    constructor() {
+        console.log('hi')
+    }
+
+
+
+}
 
 
