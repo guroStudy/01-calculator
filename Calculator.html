@@ -40,6 +40,9 @@
         height: 2.5rem;
         background-color: rgba(1, 83, 83, 0.712);
         color: #fff;
+        padding: 0 1em;
+        text-align: right;
+        font-size: 1rem;
       }
 
       .calculator__view:last-child {
@@ -81,7 +84,6 @@
       //index.js
       const app = document.getElementById("app");
       const calculator = new Calculator(app);
-      calculator.init();
 
       //calculator.js
       function Calculator(target) {
@@ -89,58 +91,59 @@
         this.result = 0;
         this.equation = "";
 
-        this.makeCalculatorFrame = (target) => {
+        const makeCalculatorFrame = (target) => {
           const calculator = document.createElement("div");
           calculator.className = "calculator";
-          target.appendChild(calculator);
+          target.append(calculator);
           return calculator;
         };
 
-        this.makeViews = (target) => {
+        const makeViews = (target) => {
           const views = document.createElement("div");
           views.className = "calculator__view__wrapper";
           views.innerHTML = `
-                  <input type="text" class="calculator__view calculator__view__equation" disabled>
-                  <input type="text" class="calculator__view calculator__view__result" disabled>
-                `;
-          target.appendChild(views);
+                        <input type="text" class="calculator__view calculator__view__equation" disabled>
+                        <input type="text" class="calculator__view calculator__view__result" disabled>
+                      `;
+
+          target.append(views);
           return views;
         };
 
-        this.makeBtns = (target) => {
+        const makeBtns = (target) => {
           const btns = document.createElement("div");
           btns.className = "calculator__btns";
           btns.innerHTML = `
-                  <button class="calculator__btns__btn type="button" value = 'C' class="allClear">AC</button>
-                  <button class="calculator__btns__btn type="button" value = 'delete'>del</button>
-                  <button class="calculator__btns__btn type="button" value = '/'>&divide</button>
-                  <button class="calculator__btns__btn type="button" value = 7>7</button>
-                  <button class="calculator__btns__btn type="button" value = 8>8</button>
-                  <button class="calculator__btns__btn type="button" value = 9>9</button>
-                  <button class="calculator__btns__btn type="button" value = '*'>&times</button>
-                  <button class="calculator__btns__btn type="button" value = 4>4</button>
-                  <button class="calculator__btns__btn type="button" value = 5>5</button>
-                  <button class="calculator__btns__btn type="button" value = 6>6</button>
-                  <button class="calculator__btns__btn type="button" value = '-'>-</button>
-                  <button class="calculator__btns__btn type="button" value = 1>1</button>
-                  <button class="calculator__btns__btn type="button" value = 2>2</button>
-                  <button class="calculator__btns__btn type="button" value = 3>3</button>
-                  <button class="calculator__btns__btn type="button" value = '+'>+</button>
-                  <button class="calculator__btns__btn type="button" value = '.'>.</button>
-                  <button class="calculator__btns__btn type="button" value = 0>0</button>
-                  <button class="calculator__btns__btn type="button" value = '='>=</button>
-                  `;
-          target.appendChild(btns);
+                        <button class="calculator__btns__btn type="button" value = 'C' class="allClear">AC</button>
+                        <button class="calculator__btns__btn type="button" value = 'delete'>del</button>
+                        <button class="calculator__btns__btn type="button" value = '/'>&divide</button>
+                        <button class="calculator__btns__btn type="button" value = 7>7</button>
+                        <button class="calculator__btns__btn type="button" value = 8>8</button>
+                        <button class="calculator__btns__btn type="button" value = 9>9</button>
+                        <button class="calculator__btns__btn type="button" value = '*'>&times</button>
+                        <button class="calculator__btns__btn type="button" value = 4>4</button>
+                        <button class="calculator__btns__btn type="button" value = 5>5</button>
+                        <button class="calculator__btns__btn type="button" value = 6>6</button>
+                        <button class="calculator__btns__btn type="button" value = '-'>-</button>
+                        <button class="calculator__btns__btn type="button" value = 1>1</button>
+                        <button class="calculator__btns__btn type="button" value = 2>2</button>
+                        <button class="calculator__btns__btn type="button" value = 3>3</button>
+                        <button class="calculator__btns__btn type="button" value = '+'>+</button>
+                        <button class="calculator__btns__btn type="button" value = '.'>.</button>
+                        <button class="calculator__btns__btn type="button" value = 0>0</button>
+                        <button class="calculator__btns__btn type="button" value = '='>=</button>
+                        `;
+          target.append(btns);
           return btns;
         };
 
-        this.makeCalculator = () => {
-          this.calculatorEl = this.makeCalculatorFrame(this.target);
-          this.viewsEl = this.makeViews(this.calculatorEl);
-          this.btnsEl = this.makeBtns(this.calculatorEl);
+        const makeCalculator = () => {
+          this.calculatorEl = makeCalculatorFrame(this.target);
+          this.viewsEl = makeViews(this.calculatorEl);
+          this.btnsEl = makeBtns(this.calculatorEl);
         };
 
-        this.initDatas = () => {
+        const initDatas = () => {
           // define views data
           const views = Array.from(
             document.querySelectorAll(".calculator__view")
@@ -151,26 +154,24 @@
           };
 
           // define btn datas
-          this.btnsArray = Array.from(this.btnsEl.children);
+          this.btns = Array.from(this.btnsEl.children);
 
-          this.numBtns = this.btnsArray.filter((item) => item.value <= 10);
-          this.operatorBtns = this.btnsArray.filter((item) =>
+          this.numBtns = this.btns.filter((item) => item.value <= 10);
+          this.operatorBtns = this.btns.filter((item) =>
             ["*", "/", "-", "+"].includes(item.value)
           );
-          this.dotBtn = this.btnsArray.filter((item) => item.value === ".")[0];
-          this.acBtn = this.btnsArray.filter((item) => item.value === "C")[0];
-          this.delBtn = this.btnsArray.filter(
+          this.dotBtn = this.btns.filter((item) => item.value === ".")[0];
+          this.acBtn = this.btns.filter((item) => item.value === "C")[0];
+          this.deleteBtn = this.btns.filter(
             (item) => item.value === "delete"
           )[0];
-          this.equalBtn = this.btnsArray.filter(
-            (item) => item.value === "="
-          )[0];
+          this.equalBtn = this.btns.filter((item) => item.value === "=")[0];
 
           this.btns = {
             numBtns: this.numBtns,
             operatorBtns: this.operatorBtns,
             dotBtn: this.dotBtn,
-            delBtn: this.delBtn,
+            deleteBtn: this.deleteBtn,
             acBtn: this.acBtn,
             equalBtn: this.eqaulBtn,
           };
@@ -178,7 +179,6 @@
           //define value/operator storage
           this.values = [];
           this.operators = [];
-          this.equalCount = 0;
         };
 
         // calculate
@@ -196,35 +196,48 @@
         };
 
         // handle datas
-        const setCurrentValue = (value) => {
-          this.currentValue = value;
+        const logData = () => {
+          console.log(this.values);
+          console.log(this.operators);
+          console.log(this.currentValue);
         };
 
-        const updateCurrentValue = (value) => {
+        const setCurrentValue = (value) => {
+          this.currentValue = value;
+          logData();
+        };
+
+        const appendToCurrentValue = (value) => {
           this.currentValue
             ? (this.currentValue += value)
             : setCurrentValue(value);
+          logData();
         };
 
         const pushToValues = (value) => {
-          this.values.push(value);
+          if (value) {
+            this.values.push(value);
+          } else {
+            throw new Error("push valid value to valueStorage");
+          }
         };
 
         const pushToOperators = (value) => {
           this.operators.push(value);
+          logData();
         };
 
-        const reset = () => {
-          this.values = [];
-          this.operators = [];
-          this.currentValue = "";
-          this.views.equation.value = "";
-        };
-
-        const getLastCharOfEquation = () => this.views.equation.value.slice(-1);
+        this.getLastCharOfEquation = () => this.views.equation.value.slice(-1);
 
         // set views
-        const updateEquationValue = (value) => {
+
+        this.setViewFontSize = (fontSize) => {
+          Object.values(this.views).forEach(
+            (i) => (i.style.fontSize = fontSize)
+          );
+        };
+
+        const appendToEquationValue = (value) => {
           this.views.equation.value += value;
         };
         const setEquationValue = (value) => {
@@ -234,43 +247,61 @@
           this.views.result.value = value;
         };
 
-        this.init = () => {
-          this.makeCalculator();
-          this.initDatas();
+        const reset = () => {
+          this.values = [];
+          this.operators = [];
+          setCurrentValue("");
+          setEquationValue("");
+          setResultValue("0");
+        };
 
-          this.numBtns.forEach((item) => {
-            item.addEventListener("click", () => {
-              console.log(this);
-              updateEquationValue(item.value);
-              updateCurrentValue(item.value);
+        this.init = () => {
+          makeCalculator();
+          initDatas();
+          console.log(this.views);
+
+          this.numBtns.forEach((numBtn) => {
+            numBtn.addEventListener("click", () => {
+              appendToEquationValue(numBtn.value);
+              appendToCurrentValue(numBtn.value);
             });
           });
 
-          this.operatorBtns.forEach((item) => {
-            item.addEventListener("click", () => {
-              updateEquationValue(item.value);
-              pushToOperators(item.value);
-              pushToValues(this.currentValue);
+          this.operatorBtns.forEach((operatorBtn) => {
+            operatorBtn.addEventListener("click", () => {
+              appendToEquationValue(operatorBtn.value);
+              pushToOperators(operatorBtn.value);
+              this.currentValue && pushToValues(this.currentValue);
               setCurrentValue(undefined);
             });
           });
 
           this.dotBtn.addEventListener("click", (e) => {
-            updateEquationValue(e.target.value);
-            updateCurrentValue(e.target.value);
+            appendToEquationValue(e.target.value);
+            appendToCurrentValue(e.target.value);
           });
 
-          this.delBtn.addEventListener("click", (e) => {
+          this.deleteBtn.addEventListener("click", (e) => {
             if (
-              getLastCharOfEquation() <= 10 ||
-              getLastCharOfEquation() === "."
+              this.getLastCharOfEquation() <= 10 ||
+              this.getLastCharOfEquation() === "."
             ) {
-              setCurrentValue(this.currentValue.slice(0, -1));
-              this.currentValue === "" && setCurrentValue(this.values.pop());
+              setCurrentValue(
+                this.currentValue
+                  ? this.currentValue.slice(0, -1)
+                  : this.values.pop()
+              );
             } else {
+              if (
+                !this.currentValue &&
+                this.views.equation.value.slice(-2, -1) <= 10
+              ) {
+                this.currentValue = this.values.pop();
+              }
               this.operators.pop();
             }
             setEquationValue(this.views.equation.value.slice(0, -1));
+            logData();
           });
 
           this.acBtn.addEventListener("click", (e) => {
@@ -278,11 +309,20 @@
           });
 
           this.equalBtn.addEventListener("click", () => {
-            let tempValues = [...this.values, this.currentValue].map((i) =>
-              parseFloat(i)
-            );
+            let tempValues = [
+              ...this.values,
+              this.currentValue ? this.currentValue : 0,
+            ].map((i) => parseFloat(i));
+            let tempOperators = [...this.operators];
 
-            this.operators.forEach((operator, i) => {
+            while (tempValues.length <= tempOperators.length) {
+              tempOperators.pop();
+              logData();
+              console.log(tempValues);
+            }
+            console.log(tempOperators);
+
+            tempOperators.forEach((operator, i) => {
               // first, calculate * and /
               if (["*", "/"].includes(operator)) {
                 tempValues[i + 1] = calculate(
@@ -297,22 +337,16 @@
                 tempValues[i + 1] = -tempValues[i + 1];
               }
             });
+            console.log(tempOperators);
+            console.log(tempValues);
+            console.log(this.currentValue);
             this.views.result.value = tempValues
               .filter(Boolean) // check truthy value
               .reduce((accumulator, current) => (accumulator += current), 0);
           });
         };
       }
-      // render(equation, result);
-      // calculate();
-      // add;
-      // sub;
-      // divide;
-      // multiply;
-      // writeEquation();
-      // btns > string;
-      // update();
-      // reset();
+      calculator.init();
     </script>
   </body>
 </html>
