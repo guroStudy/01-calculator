@@ -1,22 +1,67 @@
 *{
+    padding: 0;
+    margin: 0;
     box-sizing: border-box;
 }
 
 .calc{
-    border-collapse: collapse;
-    border: 1px solid black;
+    width: 320px;
+    height: 460px;
+    padding: 10px;
+    background-color: #60a3bc;
+    border-radius: 5px;
 }
 
-.calc td{
-    padding: 20px;
-    border: 1px solid black;
-    text-align: center;
+.textMain{
+    display: flex;
+    justify-self: center;
+    align-items: center;
+    flex-direction: column;
 }
 
-.calc .num{
-    background-color: #ffcccc;
+.btnMain{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
-#text{
+button{
+    width: 65px;
+    height: 65px;
+    padding: 10px;
+    font-size: 25px;
+    margin-bottom: 7px;
+    border-radius: 10px;
+    background-color: #0a3d62;
+    border: 0px solid #0a3d62;
+    color: #fff;
+}
+
+button:hover{
+    background-color: #3c6382;
+    color: #fff;
+}
+
+.curNum{
+    width: 280px;
+    height: 20px;
     text-align: right;
+    background-color: #f1f2f6;
+    border: 0px solid #0a3d62;
+    color: #747d8c;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.textNum{
+    width: 280px;
+    height: 50px;
+    text-align: right;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: #f1f2f6;
+    margin-bottom: 10px;
+    border: 0px solid #0a3d62;
+    font-size: 40px;
 }
