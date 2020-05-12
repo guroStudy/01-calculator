@@ -1,6 +1,11 @@
+import Output from './Output.js';
+import Input from './Input.js';
+
 export default class Calculator {
 
     constructor(target) {
+        this.container = document.querySelector('.calculator');
+        
         /**
          * 상수, 기본값
          */
@@ -9,25 +14,22 @@ export default class Calculator {
         this.OPRND_STATUS_R = 2;
 
         /**
-         * 입력 버튼
+         * 결과 출력
          */
-        this.clearBtn = document.querySelector('.clear');
-        this.invertBtn = document.querySelector('.invert');
-        this.plusBtn = document.querySelector('.plus');
-        this.minusBtn = document.querySelector('.minus');
-        this.percentBtn = document.querySelector('.percent');
-        this.divisionBtn = document.querySelector('.division');
-        this.multBtn = document.querySelector('.multiplication');
-        this.dotBtn = document.querySelector('.dot');
-        this.equalBtn = document.querySelector('.equal');
-        this.numberBtns = document.querySelectorAll('.number');
-
+        this.Output = new Output(this.container);
 
         /**
-         * 결과 출력 영역
+         * 입력
          */
-        this.output = document.querySelector('.output');
-
+        this.Input = new Input(this.container, {
+            handleClear: this.handleClear,
+            handleDot: this.handleDot,
+            handleEqual: this.handleEqual,
+            handleInvert: this.handleInvert,
+            handleNumber: this.handleNumber,
+            handleOperator: this.handleOperator,
+            handlePercent: this.handlePercent,
+        });
 
         /**
          * 상태변수
@@ -39,14 +41,10 @@ export default class Calculator {
         this.shouldOverwrite = true;
 
         /**
-         * 이벤트 바인딩
+         * 초기값 출력
          */
-        this.init();
+        this.display();
     }
-
-    /**************************************
-     * methods
-     **************************************/
 
     /**
      * 계산결과 구하기
@@ -210,50 +208,7 @@ export default class Calculator {
         else
             result = this.operandR;
         
-        this.output.innerText = result;
-    }
-
-    init = () => {
-        /**
-         * 숫자버튼 이벤트 바인딩
-         */
-        this.numberBtns.forEach(btn => btn.addEventListener('click', (e) => this.handleNumber(e.target.dataset.number)));
-
-        /**
-         * AC버튼 이벤트 바인딩
-         */
-        this.clearBtn.addEventListener('click', this.handleClear);
-
-        /**
-         * invert버튼 이벤트 바인딩
-         */
-        this.invertBtn.addEventListener('click', this.handleInvert);
-
-        /**
-         *  % 버튼 이벤트 바인딩
-         */
-        this.percentBtn.addEventListener('click', this.handlePercent);
-
-
-        /**
-         * +,-,x,÷ 버튼 이벤트 바인딩
-         */
-        this.plusBtn.addEventListener('click', () => this.handleOperator('+'));
-        this.minusBtn.addEventListener('click', () => this.handleOperator('-'));
-        this.multBtn.addEventListener('click', () => this.handleOperator('*'));
-        this.divisionBtn.addEventListener('click', () => this.handleOperator('/'));
-
-        /**
-         * (=)버튼 이벤트 바인딩
-         */
-        this.equalBtn.addEventListener('click', this.handleEqual);
-
-        /**
-         * (.)버튼 이벤트 바인딩
-         */
-        this.dotBtn.addEventListener('click', this.handleDot);
-
-        this.display();
+        this.Output.render(result);
     }
 }
 
