@@ -26,7 +26,7 @@ export default class Calculator {
         /**
          * 결과 출력 영역
          */
-        this.output = document.querySelector('#output');
+        this.output = document.querySelector('.output');
 
 
         /**

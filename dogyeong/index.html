@@ -8,40 +8,28 @@
 </head>
 <body>
     <main id="app">
-        <table>
-            <tr>
-                <td id="output" colspan="4"></td>
-            </tr>
-            <tr>
-                <td class="button clear">AC</td>
-                <td class="button invert">+/-</td>
-                <td class="button percent">%</td>
-                <td class="button division">÷</td>
-            </tr>
-            <tr>
-                <td class="button number" data-number="7">7</td>
-                <td class="button number" data-number="8">8</td>
-                <td class="button number" data-number="9">9</td>
-                <td class="button multiplication">×</td>
-            </tr>
-            <tr>
-                <td class="button number" data-number="4">4</td>
-                <td class="button number" data-number="5">5</td>
-                <td class="button number" data-number="6">6</td>
-                <td class="button minus">-</td>
-            </tr>
-            <tr>
-                <td class="button number" data-number="1">1</td>
-                <td class="button number" data-number="2">2</td>
-                <td class="button number" data-number="3">3</td>
-                <td class="button plus">+</td>
-            </tr>
-            <tr>
-                <td class="button number" data-number="0" colspan="2">0</td>
-                <td class="button dot">.</td>
-                <td class="button equal">=</td>
-            </tr>
-        </table>
+        <div class="calculator">
+            <output class="output"></output>
+            <button class="button clear bg-light">AC</button>
+            <button class="button invert bg-light">+/-</button>
+            <button class="button percent bg-light">%</button>
+            <button class="button division bg-orange">÷</button>
+            <button class="button number" data-number="7">7</button>
+            <button class="button number" data-number="8">8</button>
+            <button class="button number" data-number="9">9</button>
+            <button class="button multiplication bg-orange">×</button>
+            <button class="button number" data-number="4">4</button>
+            <button class="button number" data-number="5">5</button>
+            <button class="button number" data-number="6">6</button>
+            <button class="button minus bg-orange">-</button>
+            <button class="button number" data-number="1">1</button>
+            <button class="button number" data-number="2">2</button>
+            <button class="button number" data-number="3">3</button>
+            <button class="button plus bg-orange">+</button>
+            <button class="button number colspan-2" data-number="0">0</button>
+            <button class="button dot">.</button>
+            <button class="button equal bg-orange">=</button>
+        </div>
     </main>
     <script type="module" src="./src/App.js"></script>
     <script src="./src/mouseEvents.js"></script>
