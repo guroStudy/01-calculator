@@ -4,12 +4,19 @@
     box-sizing: border-box;
 }
 
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .calc{
     width: 320px;
     height: 460px;
     padding: 10px;
     background-color: #60a3bc;
     border-radius: 5px;
+    box-shadow: 3px 3px 3px 3px #747d8c;
 }
 
 .textMain{
@@ -36,10 +43,19 @@ button{
     background-color: #0a3d62;
     border: 0px solid #0a3d62;
     color: #fff;
+    box-shadow: 2px 2px 2px #747d8c;
+}
+
+.btnNum{
+    background-color: #3c6382;
+}
+
+.btnNum:hover{
+    background-color: #104972;
 }
 
 button:hover{
-    background-color: #3c6382;
+    background-color: #48647a;
     color: #fff;
 }
 
@@ -52,6 +68,7 @@ button:hover{
     color: #747d8c;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    padding-right: 5px;
 }
 
 .textNum{
@@ -64,4 +81,5 @@ button:hover{
     margin-bottom: 10px;
     border: 0px solid #0a3d62;
     font-size: 40px;
+    padding-right: 5px;
 }
