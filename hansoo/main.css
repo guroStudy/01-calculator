@@ -1,0 +1,81 @@
+html,
+body,
+#main {
+  width: 100%;
+  height: 100%;
+  font-size: 100%;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.calculator {
+  width: 320px;
+  background-color: #444;
+  color: #fff;
+  border-radius: 5px;
+  border: 1px solid #444;
+  box-shadow: 0 0 24px #444a;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1.4rem;
+  font-weight: 300;
+}
+
+button {
+  padding: 0;
+  border: 0;
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  border: 0;
+  flex: 0 0 25%;
+  height: 60px;
+  line-height: 60px;
+  background-color: #666;
+  border-top: 1px solid #444;
+  border-left: 1px solid #444;
+  text-align: center;
+  cursor: pointer;
+  color: inherit;
+  font-size: 1.2rem;
+  font-weight: inherit;
+  font-family: inherit;
+}
+
+button.zero {
+  flex: 0 0 50%;
+}
+
+button.orange {
+  font-size: 1.6rem;
+  background-color: orange;
+}
+
+button.active {
+  filter: contrast(130%);
+}
+
+.output {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 4px 12px;
+  overflow: hidden;
+  background-color: transparent;
+  cursor: initial;
+  font-size: 1.9rem;
+}
