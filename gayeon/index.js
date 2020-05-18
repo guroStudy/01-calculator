@@ -102,6 +102,7 @@ function calculate(e){
     })
 }
 
+//연산버튼 클릭
 function opFunc(op, num1, num2){
     let re = 0;
     switch(op){
@@ -123,7 +124,7 @@ function opFunc(op, num1, num2){
     }
 }
 
-//=
+//=클릭
 function resultN(e){
     num2 = inputNum.value;
     num1 = opFunc(op, num1, num2);
