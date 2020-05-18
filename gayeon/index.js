@@ -2,7 +2,7 @@ const number = document.querySelectorAll('.btnNum');
 const curNum = document.querySelector('.curNum');
 const inputNum = document.querySelector('.textNum');
 const operation = document.querySelectorAll('.op');
-const operN = document.querySelectorAll('opN');
+const operN = document.querySelectorAll('.opN');
 const resultNum = document.querySelector('.resNum');
 const fullDelNum = document.querySelector('.fullDel');
 
@@ -18,51 +18,67 @@ let dot = true;
 function btnNum(e){
     e.addEventListener('click', function(){
         if(numTurn){
-            //처음 입력하는 숫자인지 아닌지 판단
-            if(!opTurn){
-                inputNum.value = this.textContent;
-                curNum.innerHTML += this.textContent;
-                
-                opTurn = true;
+            if(this.textContent === '.'){
+                if(dot){
+                    if(!opTurn){
+                        inputNum.value = `0${this.textContent}`;
+                        curNum.innerHTML += inputNum.value;
+                        dot = false;
+                        opTurn = true;
+                    }
+                    else{
+                        inputNum.value = this.textContent;
+                        curNum.innerHTML += this.textContent;
+                        dot = false;
+                    }
+                }
+            } else{
+                //처음 입력하는 숫자인지 아닌지 판단
+                if(!opTurn){
+                    inputNum.value = this.textContent;
+                    curNum.innerHTML += this.textContent;
+
+                    opTurn = true;
+                }
+                else{
+                    inputNum.value += this.textContent;
+                    curNum.innerHTML += this.textContent;
+                }  
             }
-            else{
-                inputNum.value += this.textContent;
-                curNum.innerHTML += this.textContent;
-            }  
+            
         }
     });
 }
 
-number.forEach(btnNum);
-
+//%,+/-
 function opNumFunc(e){
     e.addEventListener('click', function(){
         op = this.textContent;
-        let newNum = 0;
 
         switch(op){
             case '%':
-                newNum = Number(inputNum.value) * 0.01;
+                inputNum.value = Number(inputNum.value) * 0.01;
+                break;
             case '+/-':
-                newNum = Number(inputNum.value) * (-1);   
+                inputNum.value = Number(inputNum.value) * (-1);
+                break;   
         }
 
-        inputNum.value = newNum;
+        curNum.innerHTML = inputNum.value;
         opTurn = true;
 
     });
 }
 
-operN.forEach(opNumFunc);
 
 //op 버튼 클릭
 function calculate(e){
     e.addEventListener('click', function(){
         numTurn = true;
         if(opTurn){
-            if(this.textContent !== '%' && this.textContent !== '+/-')
-                curNum.innerHTML += ' '+this.textContent+' ';
 
+            curNum.innerHTML += ` ${this.textContent} `;
+                
             //처음 값
             if(num1 === ''){
                 num1 = inputNum.value;
@@ -80,12 +96,13 @@ function calculate(e){
            
             numTurn = true;
             opTurn = false;
-
+            dot = true;
             console.log(op);
         }
     })
 }
 
+//연산버튼 클릭
 function opFunc(op, num1, num2){
     let re = 0;
     switch(op){
@@ -107,8 +124,7 @@ function opFunc(op, num1, num2){
     }
 }
 
-operation.forEach(calculate);
-
+//=클릭
 function resultN(e){
     num2 = inputNum.value;
     num1 = opFunc(op, num1, num2);
@@ -118,8 +134,6 @@ function resultN(e){
     num1 = '';
     numTurn = false;
 }
-
-resultNum.addEventListener('click', resultN);
 
 //지우기
 function fullDelFunc(e){
@@ -132,4 +146,9 @@ function fullDelFunc(e){
     dot = true;
 }
 
+
+number.forEach(btnNum);
+operN.forEach(opNumFunc);
+operation.forEach(calculate);
+resultNum.addEventListener('click', resultN);
 fullDelNum.addEventListener('click',fullDelFunc);
