@@ -22,12 +22,12 @@ function btnNum(e){
                 if(dot){
                     if(!opTurn){
                         inputNum.value = `0${this.textContent}`;
-                        curNum.innerHTML += inputNum.value;
+                        curNum.innerHTML += `${inputNum.value}`;
                         dot = false;
                         opTurn = true;
                     }
                     else{
-                        inputNum.value = this.textContent;
+                        inputNum.value += this.textContent;
                         curNum.innerHTML += this.textContent;
                         dot = false;
                     }
@@ -133,6 +133,7 @@ function resultN(e){
     op = '';
     num1 = '';
     numTurn = false;
+    opTurn = false;
 }
 
 //지우기
